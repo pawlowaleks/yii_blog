@@ -5,21 +5,22 @@ namespace app\models;
 use Yii;
 
 /**
- * This is the model class for table "post".
+ * This is the model class for table "article".
  *
  * @property int $id
- * @property string $author
+ * @property string $title
+ * @property string $content
+ * @property int $user_id
  * @property string $created_at
- * @property string $post
  */
-class Post extends \yii\db\ActiveRecord
+class Article extends \yii\db\ActiveRecord
 {
     /**
      * {@inheritdoc}
      */
     public static function tableName()
     {
-        return 'post';
+        return 'article';
     }
 
     /**
@@ -28,10 +29,11 @@ class Post extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['name', 'author', 'post'], 'required'],
+            [['title', 'content', 'user_id'], 'required'],
+            [['content'], 'string'],
+            [['user_id'], 'integer'],
             [['created_at'], 'safe'],
-            [['post'], 'string'],
-            [['name', 'author'], 'string', 'max' => 255],
+            [['title'], 'string', 'max' => 255],
         ];
     }
 
@@ -42,9 +44,10 @@ class Post extends \yii\db\ActiveRecord
     {
         return [
             'id' => Yii::t('app', 'ID'),
-            'author' => Yii::t('app', 'Author'),
+            'title' => Yii::t('app', 'Title'),
+            'content' => Yii::t('app', 'Content'),
+            'user_id' => Yii::t('app', 'User ID'),
             'created_at' => Yii::t('app', 'Created At'),
-            'post' => Yii::t('app', 'Post'),
         ];
     }
 }

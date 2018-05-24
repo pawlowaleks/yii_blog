@@ -15,6 +15,6 @@ $this->title = 'My Yii Application';
     </div>
 
     <div class="body-content">
-        
+
     </div>
 </div>
