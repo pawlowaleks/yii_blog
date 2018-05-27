@@ -33,6 +33,7 @@ class ArticleController extends ActiveController
 
 
     /**
+     * Creates new article
      * @param string token  - User token
      * @param string title  - Title of article
      * @param string content- Content of article
@@ -66,6 +67,7 @@ class ArticleController extends ActiveController
     }
 
     /**
+     * Getting articles
      * @param int $limit    - Limit showing data
      * @param int $offset   - Offset showing data
      * @return array        - List of articles or error
@@ -79,6 +81,7 @@ class ArticleController extends ActiveController
     }
 
     /**
+     * Getting articles of current user
      * @param $token        - User token
      * @param int $limit    - Limit showing data
      * @param int $offset   - Offset showing data

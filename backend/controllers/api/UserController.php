@@ -30,6 +30,7 @@ class UserController extends ActiveController
 
 
     /**
+     * Sign in user
      * @param string email - Email
      * @param string password - Password
      * @return array    - Token or error
@@ -61,7 +62,7 @@ class UserController extends ActiveController
 
 
     /**
-     *
+     * Sign up new user
      * @param string login  - Login of new user
      * @param string email  - New email
      * @param string password - Password
