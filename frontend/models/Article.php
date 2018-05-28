@@ -2,7 +2,9 @@
 
 namespace app\models;
 
+
 use Yii;
+use app\models\User;
 
 /**
  * This is the model class for table "article".
@@ -49,5 +51,10 @@ class Article extends \yii\db\ActiveRecord
             'user_id' => Yii::t('app', 'User ID'),
             'created_at' => Yii::t('app', 'Created At'),
         ];
+    }
+
+    public function getUser()
+    {
+        return $this->hasOne(User::className(),['id' => 'user_id']);
     }
 }
