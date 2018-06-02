@@ -1,5 +1,6 @@
 <?php
 
+//TODO: update namepace name, move to common/model/db
 namespace app\models;
 
 
@@ -17,6 +18,9 @@ use app\models\User;
  */
 class Article extends \yii\db\ActiveRecord
 {
+    //TODO: divide into 2 claccec: Article and Ba..eArtice
+    //TODO: write databace clacc generator via gii
+
     /**
      * {@inheritdoc}
      */

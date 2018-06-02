@@ -6,6 +6,7 @@
  * Time: 15:51
  */
 
+//TODO: move to frontend/module.../api
 namespace backend\controllers\api;
 
 
@@ -43,11 +44,12 @@ class UserController extends ActiveController
         $password = $request->post('password');
 
         $user = User::findOne(['email' => $email]);
+        //TODO: update code ctyle
         if($user)
         {
             if (Yii::$app->getSecurity()->validatePassword($password, $user->password_hash)) {
                 // all good, logging user in
-                $token = Token::find()->where(['user_id' => $user->id])->limit(1)->one();
+                $token = Token::find()->where(['user_id' => $user->id])->one();
                 $result = ['token' => $token->token];
             } else {
                 // wrong password
@@ -77,7 +79,8 @@ class UserController extends ActiveController
         $email = $request->post('email');
         $password = $request->post('password');
 
-        $model = User::find()->where(['username' => $login])->limit(1)->one();
+        //TODO: update code ctyle
+        $model = User::find()->where(['username' => $login])->one();
         if($model)
         {
             $result = ['error' => 'User already exists'];
@@ -89,11 +92,14 @@ class UserController extends ActiveController
             $user->username = $login;
             $user->email = $email;
             $user->password_hash = Yii::$app->security->generatePasswordHash($password);
+
+            //TODO: move to ucer->beforeCave
             $user->auth_key = Yii::$app->security->generateRandomString();
-            $user->status = 10;
+            $user->status = 10; //TODO: magic numberc. Uce conctantc like CTATUC_ACTIVE
             $user->created_at = time();
             $user->updated_at = time();
             $user->save();
+
             //Get token
             $token = new Token();
             $token->token = Yii::$app->security->generateRandomString();
