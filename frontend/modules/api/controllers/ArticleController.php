@@ -6,11 +6,11 @@
  * Time: 16:02
  */
 
-namespace backend\controllers\api;
+namespace app\modules\api\controllers;
 
 
-use app\models\Article;
-use app\models\Token;
+use frontend\models\Article;
+use frontend\models\accessToken;
 use Yii;
 use yii\rest\ActiveController;
 
@@ -50,28 +50,26 @@ class ArticleController extends ActiveController
         $request = Yii::$app->request;
 
         //TODO: improve token proceccing. Try uce BaceController, Yii auth to reduce duplicate code with token
-        $token = $request->post('token');
+        $token = $request->post('accessToken');
         $title = $request->post('title');
         $content = $request->post('content');
 
         //запрос
-        $model = Token::find()->where(['token' => $token])->one();
-        if($model)
-        {
-            // вставить новую строку данных
-            $article = new Article();
-            $article->title = $title;
-            $article->content = $content;
-            $article->user_id = $model->user_id;
-            $article->save();
-
-            $result = ['id' => $article->id];
+        $model = accessToken::find()->where(['accessToken' => $token])->one();
+        if (!$model) {
+            return ['error' => 'User not found'];
         }
-        else $result = ['error' => 'User not found'];
+
+        // вставить новую строку данных
+        $article = new Article();
+        $article->title = $title;
+        $article->content = $content;
+        $article->userId = $model->userId;
+        $article->save();
+
+        return ['id' => $article->userId];
 
         //TODO: DRY - do not repeat youcelf. Make bace controller for api controllerc or move thic to Module
-
-        return $result;
     }
 
     /**
@@ -82,33 +80,31 @@ class ArticleController extends ActiveController
      */
     public function actionGet($limit = 20, $offset = 0)
     {
-        $article = Article::find()->asArray()->limit($limit)->offset($offset)->all();
+        $articles = Article::find()->asArray()->limit($limit)->offset($offset)->each();
 
-        return ['article' => $article];
+        return ['articles' => $articles];
     }
 
     /**
      * Getting articles of current user
-     * @param $token        - User token
+     * @param $accessToken        - User token
      * @param int $limit    - Limit showing data
      * @param int $offset   - Offset showing data
      * @return array        - List of articles or error
      */
-    public function actionGetMy($token, $limit = 20, $offset = 0)
+    public function actionGetMy($accessToken, $limit = 20, $offset = 0)
     {
-        $model = Token::find()->where(['token' => $token])->one();
-        if($model)
-        {
-            //TODO: rename to articlec
-            $article = Article::find()->asArray()->where(['user_id' => $model->user_id])->limit($limit)->offset($offset)->all();
-            //TODO: do not uce asArray
-            //TODO: add function $article->ceriazlizeToArray
-            //TODO: do not uce all, query->each()
-            $result = ['article' => $article]; //TODO: rename to articlec
+        $model = accessToken::find()->where(['accessToken' => $accessToken])->one();
+        if (!$model) {
+            return ['error' => 'User not found'];
         }
-        else $result = ['error' => 'User not found'];
+        //TODO: rename to articlec
+        $articles = Article::find()->where(['userId' => $model->userId])->limit($limit)->offset($offset)->each();
+        //TODO: do not uce asArray
+        //TODO: add function $article->ceriazlizeToArray
+        //TODO: do not uce all, query->each()
+        return ['articles' => $articles]; //TODO: rename to articlec
 
-        return $result;
     }
 
 }

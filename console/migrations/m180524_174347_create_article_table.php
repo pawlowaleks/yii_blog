@@ -13,11 +13,11 @@ class m180524_174347_create_article_table extends Migration
     public function safeUp()
     {
         $this->createTable('article', [
-            'id' => $this->primaryKey(),
+            'articleId' => $this->primaryKey(),
             'title' => $this->string()->notNull(),
             'content' => $this->text()->notNull(),
-            'user_id' => $this->integer()->notNull(),
-            'created_at' => $this->timestamp()->notNull(),
+            'userId' => $this->integer()->notNull(),
+            'createdAt' => $this->timestamp()->notNull(),
         ]);
     }
 

@@ -9,8 +9,7 @@
 namespace frontend\controllers;
 
 
-use app\models\Article;
-use app\models\Token;
+use frontend\models\Article;
 use Yii;
 use yii\data\Pagination;
 use yii\filters\AccessControl;
@@ -58,7 +57,7 @@ class ArticleController extends Controller
 
     public function actionGetMy($limit = 20, $offset = 0)
     {
-        $query = Article::find()->where(['user_id' => Yii::$app->user->id]);
+        $query = Article::find()->where(['userId' => Yii::$app->user->id]);
         $countQuery = clone $query;
         $pages = new Pagination(['totalCount' => $countQuery->count()]);
         $models = $query->offset($pages->offset)
@@ -76,9 +75,9 @@ class ArticleController extends Controller
         $model = new Article();
 
         if ($model->load(Yii::$app->request->post())) {
-            $model->user_id = Yii::$app->user->id;
+            $model->userId = Yii::$app->user->id;
             $model->save();
-            return $this->redirect(['view', 'id' => $model->id]);
+            return $this->redirect(['view', 'id' => $model->userId]);
         }
 
         return $this->render('create', [

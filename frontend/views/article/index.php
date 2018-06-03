@@ -15,9 +15,9 @@ $this->params['breadcrumbs'][] = $this->title;
 <?php
 foreach ($models as $model) { ?>
     <h3><?= $model->title; ?></h3>
-    Author: <?= $model->user_id
+    Author: <?= $model->userId
     ; ?>
-    Created at: <?= $model->created_at; ?>
+    Created at: <?= $model->createdAt; ?>
     <p><?= $model->content ?></p>
 <?php
 }

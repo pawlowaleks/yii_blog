@@ -3,13 +3,13 @@
 use yii\helpers\Html;
 
 /* @var $this yii\web\View */
-/* @var $model app\models\Article */
+/* @var $model backend\models\Article */
 
 $this->title = Yii::t('app', 'Update Article: ' . $model->title, [
     'nameAttribute' => '' . $model->title,
 ]);
 $this->params['breadcrumbs'][] = ['label' => Yii::t('app', 'Articles'), 'url' => ['index']];
-$this->params['breadcrumbs'][] = ['label' => $model->title, 'url' => ['view', 'id' => $model->id]];
+$this->params['breadcrumbs'][] = ['label' => $model->title, 'url' => ['view', 'id' => $model->articleId]];
 $this->params['breadcrumbs'][] = Yii::t('app', 'Update');
 ?>
 <div class="article-update">

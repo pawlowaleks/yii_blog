@@ -14,8 +14,8 @@ $this->params['breadcrumbs'][] = $this->title;
 
     <h1><?= Html::encode($this->title) ?></h1>
 
-    Author: <?= $model['user_id']; ?>
-    Created at: <?= $model['created_at']; ?>
+    Author: <?= $model['userId']; ?>
+    Created at: <?= $model['createdAt']; ?>
     <p><?= $model['content'] ?></p>
 
 </div>

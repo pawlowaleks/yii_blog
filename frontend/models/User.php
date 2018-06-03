@@ -2,7 +2,6 @@
 
 namespace frontend\models;
 
-use app\models\Article;
 use Yii;
 
 /**
@@ -35,7 +34,7 @@ class User extends \yii\db\ActiveRecord
     {
         return [
             [['username', 'auth_key', 'password_hash', 'email', 'created_at', 'updated_at'], 'required'],
-            [['status', 'created_at', 'updated_at', 'id'], 'integer'],
+            [['status', 'created_at', 'updated_at'], 'integer'],
             [['username', 'password_hash', 'password_reset_token', 'email'], 'string', 'max' => 255],
             [['auth_key'], 'string', 'max' => 32],
             [['username'], 'unique'],
@@ -60,10 +59,5 @@ class User extends \yii\db\ActiveRecord
             'created_at' => Yii::t('app', 'Created At'),
             'updated_at' => Yii::t('app', 'Updated At'),
         ];
-    }
-
-    public function getUser()
-    {
-        return $this->hasMany(Article::className(),['user_id' => 'id']);
     }
 }

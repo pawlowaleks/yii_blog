@@ -5,10 +5,10 @@ namespace app\models;
 use Yii;
 use yii\base\Model;
 use yii\data\ActiveDataProvider;
-use app\models\Article;
+use backend\models\Article;
 
 /**
- * ArticleSearch represents the model behind the search form of `app\models\Article`.
+ * ArticleSearch represents the model behind the search form of `backend\models\Article`.
  */
 class ArticleSearch extends Article
 {
@@ -18,8 +18,8 @@ class ArticleSearch extends Article
     public function rules()
     {
         return [
-            [['id', 'user_id'], 'integer'],
-            [['title', 'content', 'created_at'], 'safe'],
+            [['articleId', 'userId'], 'integer'],
+            [['title', 'content', 'createdAt'], 'safe'],
         ];
     }
 
@@ -59,9 +59,9 @@ class ArticleSearch extends Article
 
         // grid filtering conditions
         $query->andFilterWhere([
-            'id' => $this->id,
-            'user_id' => $this->user_id,
-            'created_at' => $this->created_at,
+            'articleId' => $this->articleId,
+            'userId' => $this->userId,
+            'createdAt' => $this->createdAt,
         ]);
 
         $query->andFilterWhere(['like', 'title', $this->title])
