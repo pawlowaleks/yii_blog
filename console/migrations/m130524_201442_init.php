@@ -13,6 +13,7 @@ class m130524_201442_init extends Migration
             $tableOptions = 'CHARACTER SET utf8 COLLATE utf8_unicode_ci ENGINE=InnoDB';
         }
 
+        //TODO: update naming
         $this->createTable('{{%user}}', [
             'id' => $this->primaryKey(),
             'username' => $this->string()->notNull()->unique(),

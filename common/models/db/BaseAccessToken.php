@@ -1,8 +1,7 @@
 <?php
 
-namespace frontend\models;
+namespace common\models\db;
 
-use common\models\db\BaseAccessToken;
 use Yii;
 
 /**
@@ -12,7 +11,7 @@ use Yii;
  * @property string $accessToken
  * @property int $userId
  */
-class AccessToken extends BaseAccessToken
+class BaseAccessToken extends \yii\db\ActiveRecord
 {
     /**
      * {@inheritdoc}
@@ -40,9 +39,9 @@ class AccessToken extends BaseAccessToken
     public function attributeLabels()
     {
         return [
-            'accessTokenId' => Yii::t('app', 'Access Token ID'),
-            'accessToken' => Yii::t('app', 'Access Token'),
-            'userId' => Yii::t('app', 'User ID'),
+            'accessTokenId' => 'Access Token ID',
+            'accessToken' => 'Access Token',
+            'userId' => 'User ID',
         ];
     }
 }

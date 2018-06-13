@@ -7,10 +7,11 @@ use yii\filters\VerbFilter;
 use yii\filters\AccessControl;
 use common\models\LoginForm;
 
+//TODO: make 1 BaseController for all backend controllers
 /**
  * Site controller
  */
-class SiteController extends Controller
+class SiteController extends BaseController
 {
     /**
      * {@inheritdoc}

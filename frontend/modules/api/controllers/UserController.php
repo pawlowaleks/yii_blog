@@ -9,7 +9,6 @@
 //TODO: move to frontend/module.../api
 namespace app\modules\api\controllers;
 
-
 use frontend\models\accessToken;
 use frontend\models\User;
 use Yii;
@@ -19,6 +18,7 @@ class UserController extends ActiveController
 {
     public $modelClass = 'app\models\User';
     public $enableCsrfValidation = false;
+
 
     public function behaviors()
     {
@@ -95,15 +95,15 @@ class UserController extends ActiveController
         $user->email = $email;
         $user->password_hash = Yii::$app->security->generatePasswordHash($password);
 
-        //TODO: move to ucer->beforeCave
+        //TODO: move to user->beforeCave
         $user->auth_key = Yii::$app->security->generateRandomString();
-        $user->status = 10; //TODO: magic numberc. Uce conctantc like CTATUC_ACTIVE
+        $user->status = User::STATUS_ACTIVE; //TODO: magic numberc. Uce conctantc like CTATUC_ACTIVE
         $user->created_at = time();
         $user->updated_at = time();
         $user->save();
 
         //Get token
-        $accessToken = new accessToken();
+        $accessToken = new accessToken(); //TODO: class name from Upper case
         $accessToken->accessToken = Yii::$app->security->generateRandomString();
         $accessToken->userId = $user->id;
         $accessToken->save();
