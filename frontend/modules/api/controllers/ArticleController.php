@@ -9,8 +9,8 @@
 namespace app\modules\api\controllers;
 
 
-use frontend\models\Article;
-use frontend\models\accessToken;
+use common\models\db\Article;
+use common\models\db\AccessToken;
 use Yii;
 use yii\rest\ActiveController;
 
@@ -22,21 +22,26 @@ class ArticleController extends BaseController
 
 
     /**
-     * Creates new article
-     * @param string token  - User token
-     * @param string title  - Title of article
-     * @param string content- Content of article
-     * @return array
+     * @api {post} /api/article/createNew Создать новую статью
+     * @apiDescription Метод для создания новых статей
+     * @apiName createNew
+     * @apiGroup article
+     *
+     * @apiParam {String} title Title
+     * @apiParam {String} content Content
+     *
+     * @apiSuccess {Integer} articleId Id созданной статьи
      */
     public function actionCreateNew()
     {
         $request = Yii::$app->request;
 
-        //TODO: improve token proceccing. Try uce BaceController, Yii auth to reduce duplicate code with token
         $title = $request->post('title');
         $content = $request->post('content');
 
-        if(!$this->getAccess()) {
+        //TODO: update formatting
+        if (!$this->getAccess()) {
+
             return ['error' => 'User not found'];
         }
 
@@ -48,16 +53,23 @@ class ArticleController extends BaseController
         $article->userId = \Yii::$app->user->id;
         $article->save();
 
-        return ['id' => $article->userId];
-
-        //TODO: DRY - do not repeat youcelf. Make bace controller for api controllerc or move thic to Module
+        return ['articleId' => $article->userId];
     }
 
     /**
-     * Getting articles
-     * @param int $limit    - Limit showing data
-     * @param int $offset   - Offset showing data
-     * @return array        - List of articles or error
+     * @api {get} /api/article/get Получить доступные статьи
+     * @apiDescription Метод для порционной загрузки доступных статей
+     * @apiName get
+     * @apiGroup article
+     *
+     * @apiParam {Integer} [offset] Offset
+     * @apiParam {Integer} [limit] Limit
+     *
+     * @apiSuccess {Object[]} articles Массив с сущностями Статья
+     * @apiSuccess {Integer} articles.articleId ID Статьи
+     * @apiSuccess {String} articles.title Заголовок статьи
+     * @apiSuccess {String} articles.content Контент статьи
+     * @apiSuccess {Integer} articles.createdAt Дата создания статьи
      */
     public function actionGet($limit = 20, $offset = 0)
     {
@@ -68,25 +80,36 @@ class ArticleController extends BaseController
     }
 
     /**
-     * Getting articles of current user
-     * @param $accessToken        - User token
-     * @param int $limit    - Limit showing data
-     * @param int $offset   - Offset showing data
-     * @return array        - List of articles or error
+     * @api {get} /api/article/getMy Получить доступные статьи авторизованного пользователя
+     * @apiDescription Метод для порционной загрузки доступных статей авторизованного пользователя
+     * @apiName getMy
+     * @apiGroup article
+     *
+     * @apiParam {String} accessToken Access token
+     * @apiParam {Integer} [offset] Offset
+     * @apiParam {Integer} [limit] Limit
+     *
+     * @apiSuccess {Object[]} articles Массив с сущностями Статья
+     * @apiSuccess {Integer} articles.articleId ID Статьи
+     * @apiSuccess {String} articles.title Заголовок статьи
+     * @apiSuccess {String} articles.content Контент статьи
+     * @apiSuccess {Integer} articles.createdAt Дата создания статьи
      */
     public function actionGetMy($accessToken, $limit = 20, $offset = 0)
     {
-        $model = accessToken::find()->where(['accessToken' => $accessToken])->one();
+        $model = AccessToken::find()->where(['accessToken' => $accessToken])->one();
         if (!$model) {
             return ['error' => 'User not found'];
         }
-        //TODO: rename to articlec
-        $articles = Article::find()->where(['userId' => $model->userId])->limit($limit)->offset($offset)->each();
-        //TODO: do not uce asArray
-        //TODO: add function $article->serializeToArray
-        //TODO: do not uce all, query->each()
-
-        return ['articles' => $articles]; //TODO: rename to articlec
+        $query = Article::find()
+            ->andWhere(['userId' => $model->userId])
+            ->limit($limit)
+            ->offset($offset);
+        $result = [];
+        foreach ($query->each() as /** @var Article $article */ $article) {
+            $result[] = $article->serializeToArray();
+        }
+        return ['articles' => $result]; //TODO: rename to articlec
 
     }
 

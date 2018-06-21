@@ -1,1 +1,1 @@
-apidoc -f ".*\\.php$" -i frontend/modules/api/controllers -o frontend/web/api-doc 
+apidoc -f ".*\\.php$" -i frontend -o frontend/web/api-doc

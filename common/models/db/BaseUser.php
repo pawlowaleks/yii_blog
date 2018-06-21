@@ -9,13 +9,13 @@ use Yii;
  *
  * @property int $id
  * @property string $username
- * @property string $auth_key
- * @property string $password_hash
- * @property string $password_reset_token
+ * @property string $authKey
+ * @property string $passwordHash
+ * @property string $passwordResetToken
  * @property string $email
  * @property int $status
- * @property int $created_at
- * @property int $updated_at
+ * @property int $createdAt
+ * @property int $updatedAt
  */
 class BaseUser extends \yii\db\ActiveRecord
 {
@@ -33,13 +33,13 @@ class BaseUser extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['username', 'auth_key', 'password_hash', 'email', 'created_at', 'updated_at'], 'required'],
-            [['status', 'created_at', 'updated_at'], 'integer'],
-            [['username', 'password_hash', 'password_reset_token', 'email'], 'string', 'max' => 255],
-            [['auth_key'], 'string', 'max' => 32],
+            [['username', 'authKey', 'passwordHash', 'email', 'createdAt', 'updatedAt'], 'required'],
+            [['status', 'createdAt', 'updatedAt'], 'integer'],
+            [['username', 'passwordHash', 'passwordResetToken', 'email'], 'string', 'max' => 255],
+            [['authKey'], 'string', 'max' => 32],
             [['username'], 'unique'],
             [['email'], 'unique'],
-            [['password_reset_token'], 'unique'],
+            [['passwordResetToken'], 'unique'],
         ];
     }
 
@@ -51,13 +51,13 @@ class BaseUser extends \yii\db\ActiveRecord
         return [
             'id' => 'ID',
             'username' => 'Username',
-            'auth_key' => 'Auth Key',
-            'password_hash' => 'Password Hash',
-            'password_reset_token' => 'Password Reset Token',
+            'authKey' => 'Auth Key',
+            'passwordHash' => 'Password Hash',
+            'passwordResetToken' => 'Password Reset Token',
             'email' => 'Email',
             'status' => 'Status',
-            'created_at' => 'Created At',
-            'updated_at' => 'Updated At',
+            'createdAt' => 'Created At',
+            'updatedAt' => 'Updated At',
         ];
     }
 }

@@ -5,7 +5,7 @@ namespace app\models;
 use Yii;
 use yii\base\Model;
 use yii\data\ActiveDataProvider;
-use backend\models\Article;
+use common\models\db\Article;
 
 /**
  * ArticleSearch represents the model behind the search form of `backend\models\Article`.

@@ -9,8 +9,8 @@
 //TODO: move to frontend/module.../api
 namespace app\modules\api\controllers;
 
-use frontend\models\accessToken;
-use frontend\models\User;
+use common\models\db\accessToken;
+use common\models\db\User;
 use Yii;
 use yii\rest\ActiveController;
 
@@ -36,11 +36,17 @@ class UserController extends ActiveController
     }
 
 
+
     /**
-     * Sign in user
-     * @param string email - Email
-     * @param string password - Password
-     * @return array    - Token or error
+     * @api {post} /api/user/login Авторизовать пользователя
+     * @apiDescription Метод для авторизации существующих пользователей
+     * @apiName login
+     * @apiGroup user
+     *
+     * @apiParam {String} email E-mail
+     * @apiParam {String} password Password
+     *
+     * @apiSuccess {String} accessTokken Токен доступа
      */
     public function actionLogin()
     {
@@ -50,16 +56,14 @@ class UserController extends ActiveController
         $password = $request->post('password');
 
         $user = User::findOne(['email' => $email]);
-        //TODO: update code ctyle
-
         if (!$user) {
             return ['error' => 'User not found'];
         }
 
-        if (Yii::$app->getSecurity()->validatePassword($password, $user->password_hash)) {
+        if (Yii::$app->getSecurity()->validatePassword($password, $user->passwordHash)) {
             // all good, logging user in
-            $token = accessToken::find()->where(['userId' => $user->id])->one();
-            return ['token' => $token->token];
+            $accessToken = AccessToken::find()->where(['userId' => $user->id])->one();
+            return ['accessToken' => $accessToken->accessToken];
         } else {
             // wrong password
             return ['error' => 'Wrong password'];
@@ -67,13 +71,18 @@ class UserController extends ActiveController
     }
 
 
+
     /**
-     * Sign up new user
-     * @param string login  - Login of new user
-     * @param string email  - New email
-     * @param string password - Password
-     * @return array        - Token or error
-     * @throws \yii\base\Exception
+     * @api {post} /api/user/register Зарегистрировать нового пользователя
+     * @apiDescription Метод для регистрации новых пользователей
+     * @apiName register
+     * @apiGroup user
+     *
+     * @apiParam {String} login Login
+     * @apiParam {String} email E-mail
+     * @apiParam {String} password Password
+     *
+     * @apiSuccess {String} accessTokken Токен доступа
      */
     public function  actionRegister()
     {
@@ -83,8 +92,8 @@ class UserController extends ActiveController
         $email = $request->post('email');
         $password = $request->post('password');
 
-        //TODO: update code ctyle
         $model = User::find()->where(['username' => $login])->one();
+        //TODO: update formatting
         if($model) {
             return ['error' => 'User already exists'];
         }
@@ -93,17 +102,19 @@ class UserController extends ActiveController
         $user = new User();
         $user->username = $login;
         $user->email = $email;
-        $user->password_hash = Yii::$app->security->generatePasswordHash($password);
+        $user->passwordHash = Yii::$app->security->generatePasswordHash($password);
 
-        //TODO: move to user->beforeCave
-        $user->auth_key = Yii::$app->security->generateRandomString();
+        /*
+        //TODO: move to user->beforeSave
+        $user->authKey = Yii::$app->security->generateRandomString();
         $user->status = User::STATUS_ACTIVE; //TODO: magic numberc. Uce conctantc like CTATUC_ACTIVE
-        $user->created_at = time();
-        $user->updated_at = time();
+        $user->createdAt = time();
+        $user->updatedAt = time();
+        */
         $user->save();
 
         //Get token
-        $accessToken = new accessToken(); //TODO: class name from Upper case
+        $accessToken = new AccessToken(); //TODO: class name from Upper case
         $accessToken->accessToken = Yii::$app->security->generateRandomString();
         $accessToken->userId = $user->id;
         $accessToken->save();

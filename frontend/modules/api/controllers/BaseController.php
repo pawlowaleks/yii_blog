@@ -10,6 +10,7 @@ namespace app\modules\api\controllers;
 
 
 use common\models\db\BaseAccessToken;
+use common\models\db\AccessToken;
 use Yii;
 use yii\rest\ActiveController;
 
@@ -31,22 +32,25 @@ class BaseController extends ActiveController
     }
 
 
+    /**
+     * @return bool
+     */
     public function getAccess() {
         $request = Yii::$app->request;
         $token = $request->post('accessToken');
-        if (!$token) {
-            $token = $request->get('id');
+        if (empty($token)) {
+            $token = $request->get('accessToken');
         }
-        if(!$token) {
+        if (empty($token)) {
             return false;
         }
         //TODO: of $token empty get it from GET
         //запрос
-        $model = BaseAccessToken::find()->where(['accessToken' => $token])->one(); //TODO; class name from UpperCase
-        if (!$model) {
+        $model = AccessToken::find()->where(['accessToken' => $token])->one(); //TODO; class name from UpperCase
+        if (empty($model)) {
             return false;
         } else {
-            //\Yii::$app->user->login();
+            \Yii::$app->user->login($model);
             return true;
         }
     }
