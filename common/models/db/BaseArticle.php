@@ -3,6 +3,7 @@
 namespace common\models\db;
 
 use Yii;
+use yii\db\ActiveRecord;
 
 /**
  * This is the model class for table "article".
@@ -13,7 +14,7 @@ use Yii;
  * @property int $userId
  * @property string $createdAt
  */
-class BaseArticle extends \yii\db\ActiveRecord
+class BaseArticle extends ActiveRecord
 {
     /**
      * {@inheritdoc}

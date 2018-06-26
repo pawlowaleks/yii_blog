@@ -17,11 +17,11 @@ class Article extends BaseArticle
     public function serializeToArray()
     {
         $serializedObject = [];
-        $serializedObject['articleId'] = $this->articleId;
-        $serializedObject['title'] = $this->title;
-        $serializedObject['userId'] = $this->userId;
-        $serializedObject['createdAt'] = $this->createdAt;
-        //TODO: add another fields
+        $serializedObject['articleId']  = $this->articleId;
+        $serializedObject['title']      = $this->title;
+        $serializedObject['content']    = $this->content;
+        $serializedObject['userId']     = $this->userId;
+        $serializedObject['createdAt']  = $this->createdAt;
         return $serializedObject;
     }
 }

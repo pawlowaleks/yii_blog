@@ -7,6 +7,7 @@ use yii\behaviors\TimestampBehavior;
 use yii\db\ActiveRecord;
 use yii\web\IdentityInterface;
 
+//TODO: delete this
 /**
  * User model
  *
@@ -23,6 +24,7 @@ use yii\web\IdentityInterface;
  */
 class User extends ActiveRecord implements IdentityInterface
 {
+    //TODO: move this statuses to common\models\db\User
     const STATUS_DELETED = 0;
     const STATUS_ACTIVE = 10;
 

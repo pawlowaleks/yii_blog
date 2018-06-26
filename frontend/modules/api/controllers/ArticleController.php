@@ -16,10 +16,7 @@ use yii\rest\ActiveController;
 
 class ArticleController extends BaseController
 {
-    public $modelClass = 'app\models\Article';
-
-    public $enableCsrfValidation = false;
-
+    public $modelClass = 'common\models\db\Article';
 
     /**
      * @api {post} /api/article/createNew Создать новую статью
@@ -39,7 +36,6 @@ class ArticleController extends BaseController
         $title = $request->post('title');
         $content = $request->post('content');
 
-        //TODO: update formatting
         if (!$this->getAccess()) {
 
             return ['error' => 'User not found'];
@@ -53,6 +49,7 @@ class ArticleController extends BaseController
         $article->userId = \Yii::$app->user->id;
         $article->save();
 
+        //TODO: return serialized article
         return ['articleId' => $article->userId];
     }
 
@@ -73,10 +70,13 @@ class ArticleController extends BaseController
      */
     public function actionGet($limit = 20, $offset = 0)
     {
-        //TODO: use serializeToArray, generae own results
-        $articles = Article::find()->limit($limit)->offset($offset)->each();
+        $query = Article::find()->limit($limit)->offset($offset);
+        $result = [];
 
-        return ['articles' => $articles];
+        foreach ($query->each() as $article) {
+            $result[] = $article->serializeToArray();
+        }
+        return ['articles' => $result];
     }
 
     /**
@@ -97,10 +97,12 @@ class ArticleController extends BaseController
      */
     public function actionGetMy($accessToken, $limit = 20, $offset = 0)
     {
-        $model = AccessToken::find()->where(['accessToken' => $accessToken])->one();
+        //TODO: remove duplicate code
+        $model = AccessToken::find()->where(['accessToken' => $accessToken])->one(); // ?
         if (!$model) {
             return ['error' => 'User not found'];
         }
+        //TODO: to get userId use yii app user
         $query = Article::find()
             ->andWhere(['userId' => $model->userId])
             ->limit($limit)

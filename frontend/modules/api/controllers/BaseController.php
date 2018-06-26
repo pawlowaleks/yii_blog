@@ -16,6 +16,11 @@ use yii\rest\ActiveController;
 
 class BaseController extends ActiveController
 {
+    public $enableCsrfValidation = false;
+
+    /**
+     * @return array
+     */
     public function behaviors()
     {
         return [
@@ -25,6 +30,7 @@ class BaseController extends ActiveController
         ];
     }
 
+    //TODO: add default php doc
     public function beforeAction($action)
     {
         \Yii::$app->response->format = \yii\web\Response::FORMAT_JSON;
@@ -36,7 +42,7 @@ class BaseController extends ActiveController
      * @return bool
      */
     public function getAccess() {
-        $request = Yii::$app->request;
+        $request = \Yii::$app->request;
         $token = $request->post('accessToken');
         if (empty($token)) {
             $token = $request->get('accessToken');
@@ -44,13 +50,11 @@ class BaseController extends ActiveController
         if (empty($token)) {
             return false;
         }
-        //TODO: of $token empty get it from GET
-        //запрос
-        $model = AccessToken::find()->where(['accessToken' => $token])->one(); //TODO; class name from UpperCase
-        if (empty($model)) {
+        $accessToken = AccessToken::find()->where(['accessToken' => $token])->one(); //TODO; class name from UpperCase
+        if (empty($accessToken)) {
             return false;
         } else {
-            \Yii::$app->user->login($model);
+            \Yii::$app->user->login($accessToken->user);
             return true;
         }
     }
