@@ -9,6 +9,9 @@
 namespace app\modules\api\controllers;
 
 
+use common\models\ArticleCreateForm;
+use common\models\ArticleGetForm;
+use common\models\ArticleGetMyForm;
 use common\models\db\Article;
 use common\models\db\AccessToken;
 use Yii;
@@ -31,26 +34,9 @@ class ArticleController extends BaseController
      */
     public function actionCreateNew()
     {
-        $request = Yii::$app->request;
-
-        $title = $request->post('title');
-        $content = $request->post('content');
-
-        if (!$this->getAccess()) {
-
-            return ['error' => 'User not found'];
-        }
-
-        // вставить новую строку данных
-        $article = new Article();
-        $article->title = $title;
-        $article->content = $content;
-        //TODO: get user id from \Yii::$app->user...
-        $article->userId = \Yii::$app->user->id;
-        $article->save();
-
-        //TODO: return serialized article
-        return ['articleId' => $article->userId];
+        $model = new ArticleCreateForm();
+        $model->load(Yii::$app->request->post(), '');
+        return $model->create();
     }
 
     /**
@@ -68,15 +54,11 @@ class ArticleController extends BaseController
      * @apiSuccess {String} articles.content Контент статьи
      * @apiSuccess {Integer} articles.createdAt Дата создания статьи
      */
-    public function actionGet($limit = 20, $offset = 0)
+    public function actionGet(/*$limit = 20, $offset = 0*/)
     {
-        $query = Article::find()->limit($limit)->offset($offset);
-        $result = [];
-
-        foreach ($query->each() as $article) {
-            $result[] = $article->serializeToArray();
-        }
-        return ['articles' => $result];
+        $model = new ArticleGetForm();
+        $model->load(Yii::$app->request->get(), '');
+        return $model->get();
     }
 
     /**
@@ -95,24 +77,11 @@ class ArticleController extends BaseController
      * @apiSuccess {String} articles.content Контент статьи
      * @apiSuccess {Integer} articles.createdAt Дата создания статьи
      */
-    public function actionGetMy($accessToken, $limit = 20, $offset = 0)
+    public function actionGetMy(/*$accessToken, $limit = 20, $offset = 0*/)
     {
-        //TODO: remove duplicate code
-        $model = AccessToken::find()->where(['accessToken' => $accessToken])->one(); // ?
-        if (!$model) {
-            return ['error' => 'User not found'];
-        }
-        //TODO: to get userId use yii app user
-        $query = Article::find()
-            ->andWhere(['userId' => $model->userId])
-            ->limit($limit)
-            ->offset($offset);
-        $result = [];
-        foreach ($query->each() as /** @var Article $article */ $article) {
-            $result[] = $article->serializeToArray();
-        }
-        return ['articles' => $result]; //TODO: rename to articlec
-
+        $model = new ArticleGetMyForm();
+        $model->load(Yii::$app->request->get(), '');
+        return $model->getMy();
     }
 
 }

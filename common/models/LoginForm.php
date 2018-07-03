@@ -1,6 +1,8 @@
 <?php
 namespace common\models;
 
+use common\models\db\AccessToken;
+use common\models\db\User;
 use Yii;
 use yii\base\Model;
 
@@ -60,6 +62,12 @@ class LoginForm extends Model
         }
         
         return false;
+    }
+
+    public function getAccessToken()
+    {
+        $accessToken = AccessToken::find()->where(['userId' => $this->_user->id])->one();
+        return ['accessToken' => $accessToken->accessToken];
     }
 
     /**

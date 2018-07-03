@@ -11,6 +11,7 @@ namespace app\modules\api\controllers;
 
 use common\models\db\accessToken;
 use common\models\db\User;
+use common\models\LoginForm;
 use common\models\SignupForm;
 use Yii;
 use yii\base\ErrorException;
@@ -33,6 +34,18 @@ class UserController extends BaseController
      */
     public function actionLogin()
     {
+        $model = new LoginForm();
+        $model->load(Yii::$app->request->post(), '');
+
+        if (!$model->login()) {
+            return 'Error: user not found or wrong password';
+        }
+
+
+
+        return $model->getAccessToken();
+        /*
+
         //TODO: incapsulate this in EmailLoginForm
         $request = Yii::$app->request;
 
@@ -52,6 +65,7 @@ class UserController extends BaseController
             // wrong password
             return ['error' => 'Wrong password'];
         }
+        */
     }
 
 
@@ -73,17 +87,22 @@ class UserController extends BaseController
         $model = new SignupForm();
 
         $model->load(Yii::$app->request->post(), '');
+        return $model->signup();
+        /*
         if ($model->signup()) {
-            $responseObj = [];
-            $responseObj = $model->serializeResponseToArray();
-            return $responseObj;
+
+            //$responseObj = [];
+            //$responseObj = $model->serializeResponseToArray();
+            //return $responseObj;
         } else {
-            throw new ErrorException(ModelHelper::getFirstError($model));
+            //throw new ErrorException(ModelHelper::getFirstError($model));
         }
 
+        */
 
         //TODO: incapsulate this in RegistrationForm
 
+        /*
         $request = Yii::$app->request;
 
         $login = $request->post('login');
@@ -110,7 +129,7 @@ class UserController extends BaseController
         $accessToken->userId = $user->id;
         $accessToken->save();
 
-        return ['token' => $accessToken->accessToken];
+        return ['token' => $accessToken->accessToken];*/
     }
 
 }
