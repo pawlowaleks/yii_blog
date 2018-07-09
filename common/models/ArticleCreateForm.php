@@ -13,6 +13,8 @@ use common\models\db\AccessToken;
 use common\models\db\Article;
 use yii\base\Model;
 
+//TODO: move to frontend/modules/api/models/article
+
 class ArticleCreateForm extends Model
 {
     public $accessToken;
@@ -25,10 +27,6 @@ class ArticleCreateForm extends Model
     public function rules()
     {
         return [
-            ['accessToken', 'trim'],
-            ['accessToken', 'required'],
-            ['accessToken', 'string', 'min' => 2, 'max' => 255],
-
             ['title', 'string', 'min' => 1, 'max' => 255],
             ['title', 'required'],
 
@@ -38,23 +36,35 @@ class ArticleCreateForm extends Model
     }
 
 
-    public function create()
+    public function createArticle()
     {
         if (!$this->validate()) {
             return null;
         }
 
-        $accessToken = AccessToken::find()->where(['accessToken' => $this->accessToken])->one();
-
         // вставить новую строку данных
         $article = new Article();
         $article->title = $this->title;
         $article->content = $this->content;
-        $article->userId = $accessToken->userId;
-        $article->save();
+        $user = \Yii::$app->user->getIdentity();
+        $article->userId = $user->getId();
 
-        $a = Article::findOne($article->articleId);
+        return $article;
+    }
 
-        return ['article' => $a->serializeToArray()];
+    public function serializeToArray()
+    {
+        $query = $this->createArticle();
+        if (empty($query)) {
+            return null;
+        }
+
+        $query->save();
+        if (!$query->save()) {
+            $this->addError('article', 'Error when saving new article');
+            return null;
+        }
+        $query->refresh();
+        return  ['article' => $query->serializeToArray()];
     }
 }

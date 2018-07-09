@@ -13,6 +13,10 @@ use common\models\db\AccessToken;
 use common\models\db\Article;
 use yii\base\Model;
 
+//TODO: move to frontend/modules/api/models/article
+
+
+//TODO: rename to MyArticleListForm
 class ArticleGetMyForm extends Model
 {
     public $accessToken;
@@ -37,26 +41,43 @@ class ArticleGetMyForm extends Model
         ];
     }
 
-    public function getMy()
+    /**
+     * @return array|null|\yii\db\ActiveQuery
+     * @throws \Throwable
+     */
+    public function findMyArticles()
     {
         if (!$this->validate()) {
             return null;
         }
-
-        $model = AccessToken::find()->where(['accessToken' => $this->accessToken])->one();
-        if (!$model) {
-            return ['error' => 'User not found'];
+        /**
+         * @var \common\models\db\User
+         */
+        $user = \Yii::$app->user->getIdentity();
+        if (!$user) {
+            $this->addError('user', 'User not found');
+            return null;
         }
         $query = Article::find()
-            ->andWhere(['userId' => $model->userId])
+            ->andWhere(['userId' => $user->getId()])
             ->limit($this->limit)
             ->offset($this->offset);
+        return $query;
+    }
+
+    /**
+     * @return array
+     */
+    public function serializeToArray()
+    {
+        $query = $this->findMyArticles();
+        if (empty($query)) {
+            return null;
+        }
         $result = [];
         foreach ($query->each() as /** @var Article $article */ $article) {
             $result[] = $article->serializeToArray();
         }
-        return  ['articles' => $result]; //TODO: rename to articlec
-
+        return  ['articles' => $result];
     }
-
 }

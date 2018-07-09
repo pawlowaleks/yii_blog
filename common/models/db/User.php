@@ -24,10 +24,11 @@ class User extends BaseUser implements IdentityInterface
      * @return bool
      * @throws \yii\base\Exception
      */
+
     public function beforeSave($insert)
     {
         if ($insert) {
-            $this->authKey = Yii::$app->security->generateRandomString();
+            $this->generateAuthKey();
             $this->status = User::STATUS_ACTIVE;
             $this->createdAt = time();
         }

@@ -9,14 +9,20 @@
 namespace common\models;
 
 
+use common\models\db\AccessToken;
 use common\models\db\User;
+use Yii;
 use yii\base\Model;
+
+//TODO: move to frontend/modules/api/models/auth
 
 class SignupForm extends Model
 {
     public $username;
     public $email;
     public $password;
+
+    //TODO: save access token here
 
     /**
      * {@inheritdoc}
@@ -40,24 +46,37 @@ class SignupForm extends Model
         ];
     }
 
+    //TODO: separate action and serialization
     /**
      * Signs user up.
      *
-     * @return User|null the saved model or null if saving fails
+     * @return string
      */
     public function signup()
     {
         if (!$this->validate()) {
             return null;
         }
-
+        //Create user
         $user = new User();
         $user->username = $this->username;
         $user->email = $this->email;
         $user->setPassword($this->password);
-        $user->generateAuthKey();
 
-        return $user->save() ? $user : null;
+        if (!$user->save()) {
+            $this->addErrors($user->getErrors());
+            return null;
+        }
+
+        //Create access token
+        $accessToken = new AccessToken();
+        $accessToken->accessToken = Yii::$app->security->generateRandomString();
+        $accessToken->userId = $user->id;
+
+        if (!$accessToken->save()) {
+            $this->addErrors($accessToken->getErrors());
+        }
+        return $accessToken->accessToken;
     }
 
 }

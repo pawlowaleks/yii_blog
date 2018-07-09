@@ -17,6 +17,7 @@ use common\models\db\AccessToken;
 use Yii;
 use yii\rest\ActiveController;
 
+//TODO: update all actions like UserController.actionSignup
 class ArticleController extends BaseController
 {
     public $modelClass = 'common\models\db\Article';
@@ -36,7 +37,7 @@ class ArticleController extends BaseController
     {
         $model = new ArticleCreateForm();
         $model->load(Yii::$app->request->post(), '');
-        return $model->create();
+        return $model->serializeToArray();
     }
 
     /**
@@ -54,11 +55,11 @@ class ArticleController extends BaseController
      * @apiSuccess {String} articles.content Контент статьи
      * @apiSuccess {Integer} articles.createdAt Дата создания статьи
      */
-    public function actionGet(/*$limit = 20, $offset = 0*/)
+    public function actionGet()
     {
         $model = new ArticleGetForm();
         $model->load(Yii::$app->request->get(), '');
-        return $model->get();
+        return $model->serializeToArray();
     }
 
     /**
@@ -77,11 +78,11 @@ class ArticleController extends BaseController
      * @apiSuccess {String} articles.content Контент статьи
      * @apiSuccess {Integer} articles.createdAt Дата создания статьи
      */
-    public function actionGetMy(/*$accessToken, $limit = 20, $offset = 0*/)
+    public function actionGetMy()
     {
         $model = new ArticleGetMyForm();
         $model->load(Yii::$app->request->get(), '');
-        return $model->getMy();
+        return $model->serializeToArray();
     }
 
 }

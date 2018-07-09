@@ -6,6 +6,8 @@ use common\models\db\User;
 use Yii;
 use yii\base\Model;
 
+//TODO: move to frontend/modules/api/models/auth
+
 /**
  * Login form
  */
@@ -15,6 +17,9 @@ class LoginForm extends Model
     public $password;
     public $rememberMe = true;
 
+    /**
+     * @var User
+     */
     private $_user;
 
 
@@ -57,16 +62,32 @@ class LoginForm extends Model
      */
     public function login()
     {
-        if ($this->validate()) {
-            return Yii::$app->user->login($this->getUser(), $this->rememberMe ? 3600 * 24 * 30 : 0);
-        }
+
         
         return false;
     }
 
+    public function findAccessToken()
+    {
+        $accessToken = AccessToken::find()
+            ->andWhere(['userId' => $this->_user->id]);
+
+        if (!$accessToken->one()) {
+            //Create access token
+            $accessToken = new AccessToken();
+            $accessToken->accessToken = Yii::$app->security->generateRandomString();
+            $accessToken->userId = $this->_user->id;
+
+            if (!$accessToken->save()) {
+                $this->addErrors($accessToken->getErrors());
+            }
+        }
+        return $accessToken;
+    }
+
     public function getAccessToken()
     {
-        $accessToken = AccessToken::find()->where(['userId' => $this->_user->id])->one();
+        $accessToken = $this->findAccessToken();
         return ['accessToken' => $accessToken->accessToken];
     }
 

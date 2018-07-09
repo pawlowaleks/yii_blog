@@ -50,7 +50,9 @@ class BaseController extends ActiveController
         if (empty($token)) {
             return false;
         }
-        $accessToken = AccessToken::find()->where(['accessToken' => $token])->one(); //TODO; class name from UpperCase
+        $accessToken = AccessToken::find()
+            ->where(['accessToken' => $token])
+            ->one(); //TODO; class name from UpperCase
         if (empty($accessToken)) {
             return false;
         } else {
