@@ -1,28 +1,23 @@
 <?php
+
+//TODO: add namespace
+
+use common\models\db\Article;
+
 /**
  * Created by PhpStorm.
  * User: alex
- * Date: 03.07.18
- * Time: 18:21
+ * Date: 16.07.18
+ * Time: 23:58
  */
 
-namespace common\models;
-
-
-use common\models\db\Article;
-use yii\base\Model;
-
-//TODO: move to frontend/modules/api/models/article
-
-//TODO: rename to ArticleListForm
-
-//TODO: update like ArticleGetMyForm
-class ArticleGetForm extends Model
+class ArticleListForm extends \yii\base\Model
 {
+
     public $limit;
     public $offset;
 
-    private $_articles;
+    private $_article;
 
     /**
      * {@inheritdoc}
@@ -43,23 +38,24 @@ class ArticleGetForm extends Model
         if (!$this->validate()) {
             return null;
         }
-        $query = Article::find()->limit($this->limit)->offset($this->offset);
+        $query = Article::find()->limit($this->limit)->offset($this->offset)->all();
+
+        $this->_article = $query;
         return $query;
     }
 
 
     public function serializeToArray()
     {
-        $query = $this->findArticles();
-        if (empty($query)) {
+        $model = $this->_article;
+        if (empty($model)) {
             return null;
         }
+
         $result = [];
-        foreach ($query->each() as /** @var Article $article */ $article) {
+        foreach ($model as /** @var Article $article */ $article) {
             $result[] = $article->serializeToArray();
         }
         return  ['articles' => $result];
     }
-
-
 }

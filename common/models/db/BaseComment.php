@@ -5,22 +5,22 @@ namespace common\models\db;
 use Yii;
 
 /**
- * This is the model class for table "article".
+ * This is the model class for table "comment".
  *
+ * @property int $commentId
  * @property int $articleId
- * @property string $title
- * @property string $content
  * @property int $userId
+ * @property string $comment
  * @property string $createdAt
  */
-class BaseArticle extends \yii\db\ActiveRecord
+class BaseComment extends \yii\db\ActiveRecord
 {
     /**
      * {@inheritdoc}
      */
     public static function tableName()
     {
-        return 'article';
+        return 'comment';
     }
 
     /**
@@ -29,11 +29,9 @@ class BaseArticle extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['title', 'content', 'userId'], 'required'],
-            [['content'], 'string'],
-            [['userId'], 'integer'],
+            [['articleId', 'userId'], 'integer'],
+            [['comment'], 'string'],
             [['createdAt'], 'safe'],
-            [['title'], 'string', 'max' => 255],
         ];
     }
 
@@ -43,10 +41,10 @@ class BaseArticle extends \yii\db\ActiveRecord
     public function attributeLabels()
     {
         return [
+            'commentId' => 'Comment ID',
             'articleId' => 'Article ID',
-            'title' => 'Title',
-            'content' => 'Content',
             'userId' => 'User ID',
+            'comment' => 'Comment',
             'createdAt' => 'Created At',
         ];
     }

@@ -55,6 +55,8 @@ class LoginForm extends Model
         }
     }
 
+
+    //TODO: unused? Remove
     /**
      * Logs in a user using the provided username and password.
      *
@@ -67,6 +69,32 @@ class LoginForm extends Model
         }
 
         return false;
+    }
+
+    public function findAccessToken()
+    {
+        $accessToken = AccessToken::find()
+            ->andWhere(['userId' => $this->_user->id]);
+
+        if (!$accessToken->one()) {
+            //Create access token
+            $accessToken = new AccessToken();
+            $accessToken->accessToken = Yii::$app->security->generateRandomString();
+            $accessToken->userId = $this->_user->id;
+
+            if (!$accessToken->save()) {
+                $this->addErrors($accessToken->getErrors());
+            }
+        }
+        return $accessToken;
+    }
+
+    //TODO: update naming like seriazlize...
+    public function getAccessToken()
+    {
+        //TODO: update like SignupForm
+        $accessToken = $this->findAccessToken();
+        return ['accessToken' => $accessToken->accessToken];
     }
 
     /**

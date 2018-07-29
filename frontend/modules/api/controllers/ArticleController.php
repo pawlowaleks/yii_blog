@@ -6,14 +6,14 @@
  * Time: 16:02
  */
 
-namespace app\modules\api\controllers;
+namespace frontend\modules\api\controllers;
 
 
-use common\models\ArticleCreateForm;
-use common\models\ArticleGetForm;
-use common\models\ArticleGetMyForm;
+use ArticleListForm;
 use common\models\db\Article;
 use common\models\db\AccessToken;
+use CreateArticleForm;
+use MyArticleListForm;
 use Yii;
 use yii\rest\ActiveController;
 
@@ -35,9 +35,14 @@ class ArticleController extends BaseController
      */
     public function actionCreateNew()
     {
-        $model = new ArticleCreateForm();
-        $model->load(Yii::$app->request->post(), '');
-        return $model->serializeToArray();
+        $model = new CreateArticleForm();
+
+        if ($model->load(Yii::$app->request->post(), '') && $model->createArticle()) {
+            return $model->serializeToArray();
+        } else {
+
+            return var_export($model->getErrors(), true);
+        }
     }
 
     /**
@@ -57,9 +62,14 @@ class ArticleController extends BaseController
      */
     public function actionGet()
     {
-        $model = new ArticleGetForm();
-        $model->load(Yii::$app->request->get(), '');
-        return $model->serializeToArray();
+        $model = new ArticleListForm();
+
+        if ($model->load(Yii::$app->request->post(), '') && ($model->findArticles())) {
+            return $model->serializeToArray();
+        } else {
+
+            return var_export($model->getErrors(), true);
+        }
     }
 
     /**
@@ -80,9 +90,14 @@ class ArticleController extends BaseController
      */
     public function actionGetMy()
     {
-        $model = new ArticleGetMyForm();
-        $model->load(Yii::$app->request->get(), '');
-        return $model->serializeToArray();
+        $model = new MyArticleListForm();
+
+        if ($model->load(Yii::$app->request->post(), '') && ($model->findMyArticles())) {
+            return $model->serializeToArray();
+        } else {
+
+            return var_export($model->getErrors(), true);
+        }
     }
 
 }

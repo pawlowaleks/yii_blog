@@ -3,7 +3,6 @@
 namespace common\models\db;
 
 use Yii;
-use yii\db\ActiveRecord;
 
 /**
  * This is the model class for table "user".
@@ -18,7 +17,7 @@ use yii\db\ActiveRecord;
  * @property int $createdAt
  * @property int $updatedAt
  */
-class BaseUser extends ActiveRecord
+class BaseUser extends \yii\db\ActiveRecord
 {
     /**
      * {@inheritdoc}

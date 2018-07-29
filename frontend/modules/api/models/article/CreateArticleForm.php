@@ -1,25 +1,27 @@
 <?php
+
+namespace frontend\modules\api\models\article;
+
+use common\models\db\Article;
+
 /**
  * Created by PhpStorm.
  * User: alex
- * Date: 03.07.18
- * Time: 19:21
+ * Date: 17.07.18
+ * Time: 0:05
  */
 
-namespace common\models;
-
-
-use common\models\db\AccessToken;
-use common\models\db\Article;
-use yii\base\Model;
-
-//TODO: move to frontend/modules/api/models/article
-
-class ArticleCreateForm extends Model
+class CreateArticleForm extends \yii\base\Model
 {
-    public $accessToken;
+
+
     public $title;
     public $content;
+
+    /**
+     * @var Article
+     */
+    private $_article;
 
     /**
      * {@inheritdoc}
@@ -39,7 +41,7 @@ class ArticleCreateForm extends Model
     public function createArticle()
     {
         if (!$this->validate()) {
-            return null;
+            return false;
         }
 
         // вставить новую строку данных
@@ -49,22 +51,21 @@ class ArticleCreateForm extends Model
         $user = \Yii::$app->user->getIdentity();
         $article->userId = $user->getId();
 
-        return $article;
+        if (!$article->save()) {
+            $this->addErrors($article->getErrors());
+            return null;
+        }
+        $article->refresh();
+        $this->_article = $article;
+        return true;
     }
 
     public function serializeToArray()
     {
-        $query = $this->createArticle();
-        if (empty($query)) {
+        $model = $this->_article;
+        if (empty($model)) {
             return null;
         }
-
-        $query->save();
-        if (!$query->save()) {
-            $this->addError('article', 'Error when saving new article');
-            return null;
-        }
-        $query->refresh();
-        return  ['article' => $query->serializeToArray()];
+        return  ['article' => $model->serializeToArray()];
     }
 }

@@ -10,6 +10,7 @@ namespace frontend\controllers;
 
 
 use common\models\db\Article;
+use common\models\db\Comment;
 use Yii;
 use yii\data\Pagination;
 use yii\filters\AccessControl;
@@ -95,6 +96,8 @@ class ArticleController extends Controller
     {
         return $this->render('view', [
             'model' => $this->findModel($id),
+            'comment' => Comment::find()->where(['articleId' => $id])->all(),
+
         ]);
     }
 

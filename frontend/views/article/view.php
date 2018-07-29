@@ -1,6 +1,7 @@
 <?php
 
 use yii\helpers\Html;
+use yii\widgets\ActiveForm;
 use yii\widgets\DetailView;
 
 /* @var $this yii\web\View */
@@ -17,5 +18,19 @@ $this->params['breadcrumbs'][] = $this->title;
     Author: <?= $model['userId']; ?>
     Created at: <?= $model['createdAt']; ?>
     <p><?= $model['content'] ?></p>
+
+    <h4>Comments:</h4>
+
+    <?php foreach ($comment as $item) { ?>
+        <p>
+            Author: <?= $item->userId?> <br>
+            <?= $item->comment ?>
+
+        </p>
+
+    <?php } ?>
+
+    <?= Html::a('Create comment', '/comment/create?articleId=' . $model->articleId, ['class' => 'btn btn-primary']); ?>
+
 
 </div>

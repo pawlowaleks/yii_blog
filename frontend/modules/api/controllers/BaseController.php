@@ -6,7 +6,7 @@
  * Time: 17:36
  */
 
-namespace app\modules\api\controllers;
+namespace frontend\modules\api\controllers;
 
 
 use common\models\db\BaseAccessToken;

@@ -1,27 +1,23 @@
 <?php
+
+//TODO: add namespace
+
+use common\models\db\Article;
+
 /**
  * Created by PhpStorm.
  * User: alex
- * Date: 03.07.18
- * Time: 18:46
+ * Date: 17.07.18
+ * Time: 0:03
  */
 
-namespace common\models;
-
-
-use common\models\db\AccessToken;
-use common\models\db\Article;
-use yii\base\Model;
-
-//TODO: move to frontend/modules/api/models/article
-
-
-//TODO: rename to MyArticleListForm
-class ArticleGetMyForm extends Model
+class MyArticleListForm extends \yii\base\Model
 {
-    public $accessToken;
+
     public $limit;
     public $offset;
+
+    private $_article;
 
     /**
      * {@inheritdoc}
@@ -29,10 +25,6 @@ class ArticleGetMyForm extends Model
     public function rules()
     {
         return [
-            ['accessToken', 'trim'],
-            ['accessToken', 'required'],
-            ['accessToken', 'string', 'min' => 2, 'max' => 255],
-
             ['limit', 'integer', 'min' => 1, 'max' => 1000],
             ['limit', 'default', 'value' => '20'],
 
@@ -61,7 +53,9 @@ class ArticleGetMyForm extends Model
         $query = Article::find()
             ->andWhere(['userId' => $user->getId()])
             ->limit($this->limit)
-            ->offset($this->offset);
+            ->offset($this->offset)
+            ->all();
+        $this->_article = $query;
         return $query;
     }
 
@@ -70,12 +64,13 @@ class ArticleGetMyForm extends Model
      */
     public function serializeToArray()
     {
-        $query = $this->findMyArticles();
-        if (empty($query)) {
+        $model = $this->_article;
+        if (empty($model)) {
             return null;
         }
+
         $result = [];
-        foreach ($query->each() as /** @var Article $article */ $article) {
+        foreach ($model as /** @var Article $article */ $article) {
             $result[] = $article->serializeToArray();
         }
         return  ['articles' => $result];

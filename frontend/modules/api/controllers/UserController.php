@@ -7,10 +7,12 @@
  */
 
 //TODO: move to frontend/module.../api
-namespace app\modules\api\controllers;
+namespace frontend\modules\api\controllers;
 
-use common\models\LoginForm;
+
+
 use common\models\SignupForm;
+use LoginForm;
 use Yii;
 
 //TODO: update all actions like UserController.actionSignup
@@ -34,21 +36,12 @@ class UserController extends BaseController
         $model = new LoginForm();
 
         if ($model->load(Yii::$app->request->post(), '') && $model->login()) {
-
+            return $model->getAccessToken();
         } else {
+            //TODO: return errors in json
             return var_export($model->getErrors(), true);
         }
 
-        /*
-        $model->load(Yii::$app->request->post(), '');
-
-        if (!$model->login()) {
-            return 'Error: user not found or wrong password';
-        }
-*/
-
-
-        return $model->getAccessToken();
     }
 
 
@@ -70,7 +63,7 @@ class UserController extends BaseController
         $model = new SignupForm();
 
         if ($model->load(Yii::$app->request->post(), '') && ($accessToken = $model->signup())) {
-            return $accessToken;
+            return $model->getAccessToken();
         } else {
             //TODO: return errors in json
             return var_export($model->getErrors(), true);

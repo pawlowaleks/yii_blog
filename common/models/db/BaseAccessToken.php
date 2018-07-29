@@ -3,7 +3,6 @@
 namespace common\models\db;
 
 use Yii;
-use yii\db\ActiveRecord;
 
 /**
  * This is the model class for table "accessToken".
@@ -12,7 +11,7 @@ use yii\db\ActiveRecord;
  * @property string $accessToken
  * @property int $userId
  */
-class BaseAccessToken extends ActiveRecord
+class BaseAccessToken extends \yii\db\ActiveRecord
 {
     /**
      * {@inheritdoc}
