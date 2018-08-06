@@ -1,6 +1,6 @@
 <?php
 
-//TODO: add namespace
+namespace frontend\modules\api\models\article;
 
 use common\models\db\Article;
 

@@ -11,5 +11,17 @@ namespace common\models\db;
 
 class Comment extends BaseComment
 {
-
+    /**
+     * @return array
+     */
+    public function serializeToArray()
+    {
+        $serializedObject = [];
+        $serializedObject['commentId']  = $this->commentId;
+        $serializedObject['articleId']      = $this->articleId;
+        $serializedObject['userId']    = $this->userId;
+        $serializedObject['comment']     = $this->comment;
+        $serializedObject['createdAt']  = $this->createdAt;
+        return $serializedObject;
+    }
 }

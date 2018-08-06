@@ -9,6 +9,11 @@
 namespace frontend\modules\api\controllers;
 
 
+use CommentListForm;
+use frontend\modules\api\models\article\ArticleListForm;
+use frontend\modules\api\models\article\CreateCommentForm;
+use Yii;
+
 class CommentController extends  BaseController
 {
 
@@ -29,9 +34,21 @@ class CommentController extends  BaseController
      */
     public function actionGet()
     {
-        $model = new ArticleListForm();
+        $model = new CommentListForm();
 
-        if ($model->load(Yii::$app->request->post(), '') && ($model->findArticles())) {
+        if ($model->load(Yii::$app->request->post(), '') && ($model->findComments())) {
+            return $model->serializeToArray();
+        } else {
+
+            return var_export($model->getErrors(), true);
+        }
+    }
+
+    public function actionCreate()
+    {
+        $model = new CreateCommentForm();
+
+        if ($model->load(Yii::$app->request->post(), '') && ($model->createComment())) {
             return $model->serializeToArray();
         } else {
 
